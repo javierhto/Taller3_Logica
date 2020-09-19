@@ -20,6 +20,7 @@ import matplotlib.pyplot as plt
 # Se define el array de cada uno de los sintomas y de cada rango de las variables linguisticas
 # ( Un largo de 10 con rangos entre [0,5]->bajo [0,10]->medio [5,10]->alto )
 # Dolor de cabeza
+
 x_headache = np.arange(0, 11, 1)
 headache_lo = fuzz.trimf(x_headache, [0, 0, 5])
 headache_md = fuzz.trimf(x_headache, [0, 5, 10])
@@ -82,6 +83,25 @@ def printPacient(pacient):
     print("Nombre: " + pacient.name)
     print("Edad: " + str(pacient.age))
     print("Peso: " + str(pacient.weight))
+
+
+def validateInput(data, inferior, superior):
+    flag = True
+    while flag:
+        while not(data.isdigit()):
+            print("El número ingresado debe estar entre,",inferior,"y",superior,"\n")
+            data = input("Ingrese un nuevo valor: ")
+        if inferior <= int(data) <= superior:
+            flag = False
+            data = int(data)
+        else:
+            print("El número ingresado no es valido")
+            data = "invalid"
+    return data
+
+
+
+
 
 """
 print("                             #   #   #")
@@ -214,6 +234,36 @@ plt.show()
 ######################################################
 ######################################################
 
+#Valores de entrada#
+
+print("\nConsidere una escala de 0 a 10, para identificar la intensidad o ocurrencia de su(s) sintoma(s)\n>> Por ejemplo si no presenta dolor de cabeza, entonces el valor es 0 <<\n")
+
+
+headache = input("Ingrese el valor para 'dolor de cabeza': ")
+headache = validateInput(headache, 0, 10)
+
+vomit = input("Ingrese el valor para 'vomiyos y nauseas': ")
+vomit = validateInput(vomit, 0, 10)
+
+musclePain = input("Ingrese el valor para 'dolor muscular': ")
+musclePain = validateInput(musclePain, 0, 10)
+
+fatigue = input("Ingrese el valor para 'fatiga': ")
+fatigue = validateInput(fatigue, 0, 10)
+
+congestion = input("Ingrese el valor para 'congestión nasal': ")
+congestion = validateInput(congestion, 0, 10)
+
+shivers = input("Ingrese el valor para 'escalofríos': ")
+shivers = validateInput(shivers, 0, 10)
+
+cough = input("Ingrese el valor para 'tos y dolor de garganta': ")
+cough = validateInput(cough, 0, 10)
+
+fever = input("Ingrese el valor para 'fiebre': ")
+fever = validateInput(fever, 0, 10)
+
+
 ######################################################
 ######################################################
 
@@ -222,33 +272,33 @@ plt.show()
 
 # Regla 1: Dolor de cabeza leve Y Nauseas y vomitos leves Y Dolor muscular leve Y Fatiga leve Y Congestion nasal moderada
 # Como las reglas utilizan Y se toma el minimo
-rule1 = np.fmin(headache_lo[2], np.fmin(vomit_lo[4], np.fmin(musclePain_lo[4], np.fmin(fatigue_lo[3], congestion_md[7]))))
+rule1 = np.fmin(headache_lo[headache], np.fmin(vomit_lo[vomit], np.fmin(musclePain_lo[musclePain], np.fmin(fatigue_lo[fatigue], congestion_md[congestion]))))
 # Entonces la influenza es leve
 active_rule1 = np.fmin(rule1, influenza_lo)
 
 # Regla 2: Dolor de cabeza moderado Y Nauseas y vomitos leves Y Dolor muscular moderado Y Tos moderada Y Congestion nasal severa
-rule2 = np.fmin(headache_md[2], np.fmin(vomit_lo[4], np.fmin(musclePain_md[4], np.fmin(cough_md[4], congestion_hi[7]))))
+rule2 = np.fmin(headache_md[headache], np.fmin(vomit_lo[vomit], np.fmin(musclePain_md[musclePain], np.fmin(cough_md[cough], congestion_hi[congestion]))))
 # Entonces la influenza es moderada
 active_rule2 = np.fmin(rule2, influenza_md)
 
 # Regla 3: Fiebre moderada Y Dolor de cabeza leve Y nauseas y vomitos Moderado Y Dolor muscular moderado Y fatiga moderada
 #           Y escalofrios moderados Y congestion nasal severa
-rule3 = np.fmin(fever_md[8], np.fmin(headache_lo[2], np.fmin(vomit_md[4], np.fmin(musclePain_md[4], np.fmin(fatigue_md[3], np.fmin(shivers_md[6], congestion_hi[7]))))))
+rule3 = np.fmin(fever_md[fever], np.fmin(headache_lo[headache], np.fmin(vomit_md[vomit], np.fmin(musclePain_md[musclePain], np.fmin(fatigue_md[fatigue], np.fmin(shivers_md[shivers], congestion_hi[congestion]))))))
 # Entonces la influenza es moderada
 active_rule3 = np.fmin(rule3, influenza_md)
 
 # Regla 4: Fiebre alta Y dolor de cabeza moderado Y dolor muscular moderado Y escalofrios altos
-rule4 = np.fmin(fever_hi[8], np.fmin(headache_md[2], np.fmin(musclePain_md[4], shivers_hi[6])))
+rule4 = np.fmin(fever_hi[fever], np.fmin(headache_md[headache], np.fmin(musclePain_md[musclePain], shivers_hi[shivers])))
 # Entonces la influenza es muy alta
 active_rule4 = np.fmin(rule4, influenza_vhi)
 
 # Regla 5: Dolor de cabeza moderado Y dolor muscular Alto Y fatiga moderada Y tos leve Y congestion nasal leve
-rule5 = np.fmin(headache_md[2], np.fmin(musclePain_hi[4], np.fmin(fatigue_md[3], np.fmin(cough_lo[4], congestion_lo[7]))))
+rule5 = np.fmin(headache_md[headache], np.fmin(musclePain_hi[musclePain], np.fmin(fatigue_md[fatigue], np.fmin(cough_lo[cough], congestion_lo[congestion]))))
 # Entonces la influenza es moderada
 active_rule5 = np.fmin(rule5, influenza_md)
 
 # Regla 6: Dolor de cabeza alto Y nauseas y vomitos alto Y dolor muscular moderado Y tos leve Y congestion nasal moderada
-rule6 = np.fmin(headache_hi[2], np.fmin(vomit_hi[4], np.fmin(musclePain_md[4], np.fmin(cough_lo[4], congestion_md[7]))))
+rule6 = np.fmin(headache_hi[headache], np.fmin(vomit_hi[vomit], np.fmin(musclePain_md[musclePain], np.fmin(cough_lo[cough], congestion_md[congestion]))))
 # Entonces la influenza es alta
 active_rule6 = np.fmin(rule6, influenza_hi)
 
