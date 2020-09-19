@@ -99,7 +99,13 @@ def validateInput(data, inferior, superior):
             data = "invalid"
     return data
 
-
+def areaZero (areas):
+    total = 0
+    for area in areas:
+        total += area
+    if total == 0:
+        return True
+    return False
 
 
 
@@ -347,29 +353,37 @@ plt.show()
 # Se agrega el resultado de todas las reglas a una variable
 aggregated = np.fmax(active_rule1, np.fmax(active_rule2, np.fmax(active_rule3, np.fmax(active_rule4, np.fmax(active_rule5, active_rule6)))))
 
-# Se calcula el centroide para desfuzificar (COA)
-influenza = fuzz.defuzz(x_influenza, aggregated, 'centroide')
-influenza_plot = fuzz.interp_membership(x_influenza, aggregated, influenza)  # for plot
+if areaZero(aggregated):
+    print("\n----->> Error <<-----\n")  # Aqui se puede cambiar por otro mensaje.
+                                        # Opciones:
+                                        #           * "El área es 0 y por ende indicar que no tiene influenza"
+                                        #           * "El área es 0, indicar error de opereaciones, en base a valores ingresados"
+else:
+    # Se calcula el centroide para desfuzificar (COA)
+    influenza = fuzz.defuzz(x_influenza, aggregated, 'centroide')
+    influenza_plot = fuzz.interp_membership(x_influenza, aggregated, influenza)  # for plot
 
-# Se visualiza el grafico
-fig, ax0 = plt.subplots(figsize=(8, 3))
+    # Se visualiza el grafico
+    fig, ax0 = plt.subplots(figsize=(8, 3))
 
-ax0.plot(x_influenza, influenza_lo, 'b', linewidth=0.5, linestyle='--')
-ax0.plot(x_influenza, influenza_md, 'g', linewidth=0.5, linestyle='--')
-ax0.plot(x_influenza, influenza_hi, 'r', linewidth=0.5, linestyle='--')
-ax0.plot(x_influenza, influenza_vhi, 'm', linewidth=0.5, linestyle='--')
-ax0.fill_between(x_influenza, influenza0, aggregated, facecolor='Orange', alpha=0.7)
-ax0.plot([influenza, influenza], [0, influenza_plot], 'k', linewidth=1.5, alpha=0.9)
-ax0.set_title('Resultado al desfuzificar')
+    ax0.plot(x_influenza, influenza_lo, 'b', linewidth=0.5, linestyle='--')
+    ax0.plot(x_influenza, influenza_md, 'g', linewidth=0.5, linestyle='--')
+    ax0.plot(x_influenza, influenza_hi, 'r', linewidth=0.5, linestyle='--')
+    ax0.plot(x_influenza, influenza_vhi, 'm', linewidth=0.5, linestyle='--')
+    ax0.fill_between(x_influenza, influenza0, aggregated, facecolor='Orange', alpha=0.7)
+    ax0.plot([influenza, influenza], [0, influenza_plot], 'k', linewidth=1.5, alpha=0.9)
+    ax0.set_title('Resultado al desfuzificar')
 
-# Turn off top/right axes
-for ax in (ax0,):
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
-    ax.get_xaxis().tick_bottom()
-    ax.get_yaxis().tick_left()
+    # Turn off top/right axes
+    for ax in (ax0,):
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.get_xaxis().tick_bottom()
+        ax.get_yaxis().tick_left()
 
-plt.show()
+    plt.show()
 
-# Recolección de los datos de síntomas del paciente
+    # Recolección de los datos de síntomas del paciente
+
+
 
