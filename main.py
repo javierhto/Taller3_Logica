@@ -246,11 +246,14 @@ risk_factor = 0
 
 #Valores de entrada#
 age = input("\n Ingrese la edad del paciente: ")
+age = validateInput(age, 0, 120)
 if int(age) < 5 or int(age) > 65:
     risk_factor = risk_factor + 1
 
 weight = input("\n Ingrese el peso del paciente (en kilos): ")
+weight = validateInput(weight, 2.5, 300)
 height = input("\n Ingrese la altura del paciente (en centimetros): ")
+height = validateInput(height, 44, 210)
 if (int(weight) % (int(height)%50)) > 40:
     risk_factor = risk_factor + 1
 cronic_sickness = input("\n ¿Padece de alguna enfermedad cronica? [Y/N]: ")
@@ -325,7 +328,7 @@ rule6 = np.fmin(headache_hi[headache], np.fmin(vomit_hi[vomit], np.fmin(musclePa
 active_rule6 = np.fmin(rule6, influenza_hi)
 
 # Regla 7: Si los factores de riesgo son altos entonces la influenza es muy alta
-active_rule7 = np.fmin(risk_hi[2], influenza_vhi)
+active_rule7 = np.fmin(risk_hi[risk_factor], influenza_vhi)
 
 
 ######################################################
@@ -405,7 +408,7 @@ else:
 
     plt.show()
 
-    # Recolección de los datos de síntomas del paciente
+
 
 
 
