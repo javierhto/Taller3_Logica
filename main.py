@@ -60,6 +60,10 @@ x_fever = np.arange(0, 11, 1)
 fever_lo = fuzz.trimf(x_fever, [0, 0, 5])
 fever_md = fuzz.trimf(x_fever, [0, 5, 10])
 fever_hi = fuzz.trimf(x_fever, [5, 10, 10])
+# Factores de riesgo
+x_risk = np.arange(0, 4, 1)
+risk_lo = fuzz.trimf(x_risk, [0, 0, 2])
+risk_hi = fuzz.trimf(x_risk, [0, 3, 3])
 # Influenza
 x_influenza = np.arange(0, 16, 1)
 influenza_lo = fuzz.trimf(x_influenza, [0, 0, 5])
@@ -220,11 +224,9 @@ ax7.plot(x_fever, fever_hi, 'r', linewidth=1.5, label='Alta')
 ax7.set_title('Fiebre')
 ax7.legend()
 
-ax8.plot(x_influenza, influenza_lo, 'b', linewidth=1.5, label='Leve')
-ax8.plot(x_influenza, influenza_md, 'g', linewidth=1.5, label='Moderada')
-ax8.plot(x_influenza, influenza_hi, 'r', linewidth=1.5, label='Alta')
-ax8.plot(x_influenza, influenza_hi, 'r', linewidth=1.5, label='Muy alta')
-ax8.set_title('Nivel de influenza')
+ax8.plot(x_risk, risk_lo, 'g', linewidth=1.5, label='Bajo')
+ax8.plot(x_risk, risk_hi, 'r', linewidth=1.5, label='Alta')
+ax8.set_title('Nivel de factores de reisgo')
 ax8.legend()
 
 
@@ -240,7 +242,21 @@ plt.show()
 ######################################################
 ######################################################
 
+risk_factor = 0
+
 #Valores de entrada#
+age = input("\n Ingrese la edad del paciente: ")
+if int(age) < 5 or int(age) > 65:
+    risk_factor = risk_factor + 1
+
+weight = input("\n Ingrese el peso del paciente (en kilos): ")
+height = input("\n Ingrese la altura del paciente (en centimetros): ")
+if (int(weight) % (int(height)%50)) > 40:
+    risk_factor = risk_factor + 1
+cronic_sickness = input("\n ¿Padece de alguna enfermedad cronica? [Y/N]: ")
+if cronic_sickness == "Y":
+    risk_factor = risk_factor + 1
+
 
 print("\nConsidere una escala de 0 a 10, para identificar la intensidad o ocurrencia de su(s) sintoma(s)\n>> Por ejemplo si no presenta dolor de cabeza, entonces el valor es 0 <<\n")
 
@@ -308,6 +324,10 @@ rule6 = np.fmin(headache_hi[headache], np.fmin(vomit_hi[vomit], np.fmin(musclePa
 # Entonces la influenza es alta
 active_rule6 = np.fmin(rule6, influenza_hi)
 
+# Regla 7: Si los factores de riesgo son altos entonces la influenza es muy alta
+active_rule7 = np.fmin(risk_hi[2], influenza_vhi)
+
+
 ######################################################
 ######################################################
 
@@ -331,6 +351,8 @@ ax0.fill_between(x_influenza, influenza0, active_rule5, facecolor='m', alpha=0.7
 ax0.plot(x_influenza, influenza_md, 'm', linewidth=0.5, linestyle='--')
 ax0.fill_between(x_influenza, influenza0, active_rule6, facecolor='k', alpha=0.7)
 ax0.plot(x_influenza, influenza_hi, 'k', linewidth=0.5, linestyle='--')
+ax0.fill_between(x_influenza, influenza0, active_rule7, facecolor='y', alpha=0.7)
+ax0.plot(x_influenza, influenza_vhi, 'k', linewidth=0.5, linestyle='--')
 
 ax0.set_title('Nivel total de influenza')
 
@@ -351,7 +373,7 @@ plt.show()
 
 # Desfuzificacion
 # Se agrega el resultado de todas las reglas a una variable
-aggregated = np.fmax(active_rule1, np.fmax(active_rule2, np.fmax(active_rule3, np.fmax(active_rule4, np.fmax(active_rule5, active_rule6)))))
+aggregated = np.fmax(active_rule1, np.fmax(active_rule2, np.fmax(active_rule3, np.fmax(active_rule4, np.fmax(active_rule5, np.fmax(active_rule6, active_rule7))))))
 
 if areaZero(aggregated):
     print("\n----->> Error <<-----\n")  # Aqui se puede cambiar por otro mensaje.
