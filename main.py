@@ -111,7 +111,26 @@ def areaZero (areas):
         return True
     return False
 
+def maxAndPos(candidates):
+    i = 0
+    position = 0
+    valor = candidates[0]
+    while i < len(candidates):
+        if valor < candidates[i]:
+            valor = candidates
+            position = i
+        i += 1
+    return valor, position
 
+def interpretateInfluenza(position):
+    if position == 0:
+        return "Influeza de grado Leve"
+    elif (position == 1):
+        return "Influenza de grado Medio"
+    elif(position == 2):
+        return "Influenza de grado Alto"
+    elif(position == 3):
+        return "Influenza de grado Muy Alto"
 
 """
 print("                             #   #   #")
@@ -240,6 +259,9 @@ for ax in (ax6, ax7, ax8):
 plt.show()
 
 ######################################################
+print("                             #   #   #")
+print("Bienvenido al sistema de diagnóstico de influenza de los estudiantes")
+print("de Ingeniería Infomática de la Universidad Santiago de Chile\n")
 ######################################################
 
 risk_factor = 0
@@ -409,6 +431,13 @@ else:
     plt.show()
 
 
+    influenza_resultLow = influenza_lo[influenza]
+    influenza_resultMD = influenza_md[influenza]
+    influenza_resultH = influenza_hi[influenza]
+    influenza_resultVH = influenza_vhi[influenza]
 
+    belognsTo, resultPosition = maxAndPos([influenza_resultLow, influenza_resultMD, influenza_resultH, influenza_resultVH])
+    influenza_Grade = interpretateInfluenza(resultPosition)
 
+    print("En base a los datos ingresados, y al 'valor de pertenencia' obtenido (",belognsTo,").\nEs que se estima que padece",influenza_Grade)
 
