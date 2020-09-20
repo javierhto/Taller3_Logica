@@ -117,7 +117,7 @@ def maxAndPos(candidates):
     valor = candidates[0]
     while i < len(candidates):
         if valor < candidates[i]:
-            valor = candidates
+            valor = candidates[i]
             position = i
         i += 1
     return valor, position
@@ -276,7 +276,7 @@ weight = input("\n Ingrese el peso del paciente (en kilos): ")
 weight = validateInput(weight, 2.5, 300)
 height = input("\n Ingrese la altura del paciente (en centimetros): ")
 height = validateInput(height, 44, 210)
-if (int(weight) % (int(height)%50)) > 40:
+if (int(weight) / (int(height)/50)) > 40:
     risk_factor = risk_factor + 1
 cronic_sickness = input("\n ¿Padece de alguna enfermedad cronica? [Y/N]: ")
 if cronic_sickness == "Y":
@@ -431,10 +431,10 @@ else:
     plt.show()
 
 
-    influenza_resultLow = influenza_lo[influenza]
-    influenza_resultMD = influenza_md[influenza]
-    influenza_resultH = influenza_hi[influenza]
-    influenza_resultVH = influenza_vhi[influenza]
+    influenza_resultLow = fuzz.interp_membership(x_influenza, influenza_lo, influenza)
+    influenza_resultMD = fuzz.interp_membership(x_influenza, influenza_md, influenza)
+    influenza_resultH = fuzz.interp_membership(x_influenza, influenza_hi, influenza)
+    influenza_resultVH = fuzz.interp_membership(x_influenza, influenza_vhi, influenza)
 
     belognsTo, resultPosition = maxAndPos([influenza_resultLow, influenza_resultMD, influenza_resultH, influenza_resultVH])
     influenza_Grade = interpretateInfluenza(resultPosition)
